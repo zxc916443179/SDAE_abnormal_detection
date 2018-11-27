@@ -1,7 +1,26 @@
-## Detecting anomalous events in videos by learning deep representations of appearance and motion
+## Learning Deep Representations of Appearance and Motion for Anomalous Event Detection
 
-An implementation of paper **Detecting anomalous events in videos by learning deep representations of appearance and motion** on python, opencv and tensorflow. This paper uses the _stacked denoising autoencoder_ for the the _feature_ training on the _appearance_ and _motion flow_ features as input for different window sizes and using _multiple SVM_ as a weighted single classifier this is work under progress if anyone can contribute I would be glad to work.
+    Reimplementation of this paper.
+- Dataset UCSD_Anomaly_Dataset
 
-### File details
-Most of the files contains the script and details in the files. Once scpit splices the imges of different size for apperance model: windows size - _15x15_, _18x18_, 20x20
-Denoising auto encoder file to train the model from the pickle file where you have created the dataset from the images.
+### Usage
+
+```bash
+    # pretrain and finetuning
+    python ./dae.py 
+        --datasetPath "path to dataset"
+        --num_epoch "number of epoch(default: 10)"
+        --batch_size "batch size(default: 10)"
+        --max "max number of dataset per epoch(0 represents all)"
+        --corrupt_prob "corrupted data ratio"
+        --dimensions "dimensions of hidden layers (default:[1024, 512, 256, 128]"
+        --momentum "learning momentum(default:0.9)"
+    # evaluation
+    python ./eval.py
+        --checkpoint_dir "loading latest checkpoint"
+
+    # and so on
+
+```
+
+> Thanks to original work but it is incomplete:[anomaly-event-detection](https://github.com/nabulago/anomaly-event-detection)
