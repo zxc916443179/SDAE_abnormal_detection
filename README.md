@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Learning Deep Representations of Appearance and Motion for Anomalous Event Detection
 
     Reimplementation of this paper.
@@ -23,4 +24,4 @@
 
 ```
 
-> Thanks to original work but it is incomplete:[anomaly-event-detection](https://github.com/nabulago/anomaly-event-detection)
+
