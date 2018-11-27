@@ -24,7 +24,11 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-
+UCSD_Anomaly_Dataset*/
+data/
+appearance_spliced_images/
+data_test/
+runs/
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
