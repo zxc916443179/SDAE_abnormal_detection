@@ -24,6 +24,10 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.out
+out
+*.model
+*.json
 UCSD_Anomaly_Dataset*/
 data/
 appearance_spliced_images/
