@@ -118,8 +118,10 @@ class DAE(object):
             global_step = tf.Variable(0, trainable=False, name="global_step")
             learning_rate = 0.001
             # learning_rate = tf.train.exponential_decay(0.01, global_step, flags.max / flags.batch_size, 0.98, staircase=True)
-            optimizer = tf.train.RMSPropOptimizer(learning_rate, momentum=self.momentum)
-            grads_and_vars = optimizer.compute_gradients(self.scores[i], var_list=self.params[i])
+            # optimizer = tf.train.RMSPropOptimizer(learning_rate, momentum=self.momentum)
+            # optimizer = tf.train.AdamOptimizer(learning_rate)
+            optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+            grads_and_vars = optimizer.compute_gradients(self.scores[i])
             train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
             sess.run(tf.initialize_all_variables())
             #define summaries
@@ -182,7 +184,9 @@ class DAE(object):
         learning_rate = 0.001
         # learning_rate = tf.train.exponential_decay(0.01, global_step, flags.max / flags.batch_size, 0.98, staircase=True)
         saver = tf.train.Saver(tf.global_variables())
-        optimizer = tf.train.RMSPropOptimizer(learning_rate, momentum=self.momentum)
+        # optimizer = tf.train.RMSPropOptimizer(learning_rate, momentum=self.momentum)
+        # optimizer = tf.train.AdamOptimizer(learning_rate)
+        optimizer = tf.train.GradientDescentOptimizer(learning_rate)
         grads_and_vars = optimizer.compute_gradients(self.score)
         finetune_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
         sess.run(tf.initialize_all_variables())
