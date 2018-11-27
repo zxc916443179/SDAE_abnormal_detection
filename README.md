@@ -1,7 +1,7 @@
 <<<<<<< HEAD
 ## Learning Deep Representations of Appearance and Motion for Anomalous Event Detection
 
-    Reimplementation of this paper.
+    Reimplementation of this paper with python and tensorflow.
 - Dataset UCSD_Anomaly_Dataset
 
 ### Usage
@@ -16,12 +16,14 @@
         --corrupt_prob "corrupted data ratio"
         --dimensions "dimensions of hidden layers (default:[1024, 512, 256, 128]"
         --momentum "learning momentum(default:0.9)"
+
     # evaluation
     python ./eval.py
         --checkpoint_dir "loading latest checkpoint"
 
+    # visualization
+    tensorboard --logdir ./runs/your_path/summaries # shown on http://localhost:6006
     # and so on
-
 ```
 
 > Thanks to original work but it is incomplete:[anomaly-event-detection](https://github.com/nabulago/anomaly-event-detection)
