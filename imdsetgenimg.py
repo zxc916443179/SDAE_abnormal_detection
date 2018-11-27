@@ -22,12 +22,12 @@ path = 'UCSD_Anomaly_Dataset.v1p2/UCSDped1/Train/'
 
 for tfds in trainfolders:
     flds = str(path) + str(tfds) +'/'+str(flGray)
-    print flds
+    print(flds)
     fileData = fileData + [flds]
 # fileData = sorted(fileData)
-print len(fileData)
+print(len(fileData))
 fileData = list(set(fileData))
-print len(fileData)
+print(len(fileData))
 i = 0
 # while i<5:
 #     print fileData[i]
@@ -43,7 +43,7 @@ with open("temporary.p",'wb') as imageDataset:
     for fdt in fileData:
         for fls in os.listdir(fdt):
             fl1  = str(fdt)+"/"+str(fls)
-            print fl1 
+            print(fl1) 
             filesAll = filesAll + [fl1]
             # if cnt < 0:
             #     break
@@ -91,7 +91,7 @@ with open("temporary.p",'wb') as imageDataset:
             # print images
             
             ########### now
-            print "Images : " + str(images.shape[1])
+            print("Images : " + str(images.shape[1]))
             ########### now
 
 
@@ -108,7 +108,7 @@ with open("temporary.p",'wb') as imageDataset:
             if k == 27:
                 pickle.dump(images,imageDataset,-1)
                 imageDataset.close()
-                print imageDataset.closed
+                print(imageDataset.closed)
                 if not imageDataset.closed:
                     imageDataset.close()
                 cv2.destroyAllWindows()
@@ -116,7 +116,7 @@ with open("temporary.p",'wb') as imageDataset:
             elif k == ord('q'):
                 pickle.dump(images,imageDataset,-1)
                 imageDataset.close()
-                print imageDataset.closed
+                print(imageDataset.closed)
                 if not imageDataset.closed:
                     imageDataset.close()
                 cv2.destroyAllWindows()

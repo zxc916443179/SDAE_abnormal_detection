@@ -4,7 +4,7 @@ Parag K. Mital, Jan. 2016
 """
 import tensorflow as tf
 import numpy as np
-
+# import matplotlib.pyplot as plt
 
 def montage_batch(images):
     """Draws all filters (n_input * n_output filters) as a
@@ -70,23 +70,48 @@ def montage(W):
 
 
 # %%
-def corrupt(x):
+def corrupt(x, mask=None):
     """Take an input tensor and add uniform masking.
 
     Parameters
     ----------
     x : Tensor/Placeholder
         Input to corrupt.
-
+    mask: none
     Returns
     -------
     x_corrupted : Tensor
         50 pct of values corrupted.
     """
-    return tf.multiply(x, tf.cast(tf.random_uniform(shape=tf.shape(x),
-                                               minval=0,
-                                               maxval=2,
-                                               dtype=tf.int32), tf.float32))
+    import copy
+    cor = copy.deepcopy(x)
+    if mask is not None:
+        for i in range(x.shape[0]):
+            cor[i] *= mask[i]
+        shuffle_indices = np.random.permutation(np.arange(cor.shape[0]))
+        shuffle_data = cor[shuffle_indices]
+        x = x[shuffle_indices]
+        return shuffle_data, x
+    n = np.random.normal(0, 0.1, (x.shape[0], x.shape[1]))
+    # y = x + n
+    # fig, axs = plt.subplots(2, n_examples, figsize=(10, 2))
+    # for example_i in range(n_examples):
+    #     axs[0][example_i].imshow(
+    #         # np.reshape(test_xs[example_i, :], (28, 28)))
+    #         np.reshape(y[example_i, :], (15, 15)))
+    #     axs[1][example_i].imshow(
+    #         # np.reshape([recon[example_i, :] + mean_img], (28, 28)))
+    #         np.reshape([x[example_i, :]], (15, 15)))
+    # print ('Plot complete now showing...')
+    # fig.show()
+    # plt.draw()
+    # plt.title("1st function - dataset ones but used our dataset")
+    # plt.waitforbuttonpress()
+    return x + n
+    # return tf.multiply(x, tf.cast(tf.random_uniform(shape=tf.shape(x),
+    #                                            minval=0,
+    #                                            maxval=2,
+    #                                            dtype=tf.int32), tf.float32))
 
 
 # %%

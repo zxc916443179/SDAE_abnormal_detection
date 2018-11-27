@@ -10,17 +10,17 @@ from shutil import copyfile
 import os
 import pickle
 import cv2
-datasetPath = '/apperance'
+datasetPath = '/appearance'
 # trainFolders = ['Train001','Train002']
 
-# image_15.txt has the filepaths of all the apperance windows
+# image_15.txt has the filepaths of all the appearance windows
 # of different scales
 
-fileData = open('./apperance/image_15.txt','r').read().split('\n')
+fileData = open('./appearance/image_15.txt','r').read().split('\n')
 fileData = sorted(fileData)
 #print len(fileData)
 fileData = list(set(fileData))
-print len(fileData)
+print (len(fileData))
 i = 0
 # while i<5:
 #     print fileData[i]
@@ -31,34 +31,34 @@ i = 0
 #print "data shuffled"
 # i = 0
 images = np.ones((225,),dtype='uint8')
-print type(images)
-print fileData[10]
+print (type(images))
+print (fileData[10])
 
 for i,flD in enumerate(fileData):
-    print "File data : " + str(i) +str(fileData[i])
+    print ("File data : " + str(i) +str(fileData[i]))
     if i==20:
         break
 
-with open("apperance_main.pkl",'wb') as imageDataset:
+with open("appearance_main.pkl",'wb') as imageDataset:
     for flD in fileData:
         if i%100 == 0:
-            print "===================="
-            print "Completed 100 images"
-            print "===================="
-            print "Total images saved : " + str(i)
+            print ("====================")
+            print ("Completed 100 images")
+            print ("====================")
+            print ("Total images saved : " + str(i))
         if i%1000 == 0:
-            print "===================="
-            print "Completed 1000 images"
-            print "===================="
-            print "Total images saved : " + str(i)
+            print ("====================")
+            print ("Completed 1000 images")
+            print ("====================")
+            print ("Total images saved : " + str(i))
 
         if i > 20000:
-            print "===================="
-            print "Completed 20000 files"
-            print "===================="
+            print ("====================")
+            print ("Completed 20000 files")
+            print ("====================")
             break
         # print "Second loop"
-        print flD
+        print (flD)
         # print fileData
         # print "File data : " +str(fileData[i])
         # sampleOne = fileData[i]

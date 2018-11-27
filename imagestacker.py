@@ -42,7 +42,7 @@ listOfImagesAll = []
 
 for lf in listOfFolders:
 	for ws in listOfWindows:
-		print lf+"/"+ws
+		print(lf+"/"+ws)
 
 #imn, tst, tb = extractFileName(imageD)
 #print (imn, tst, tb)

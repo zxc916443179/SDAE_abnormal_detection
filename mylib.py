@@ -86,8 +86,8 @@ def sliding_window ( image, stepSize, windowSize ):
                     and given window size and stride length
     '''
     # slide a window across the image
-    for y in xrange (0, image.shape[0], stepSize):
-        for x in xrange (0, image.shape[1], stepSize):
+    for y in range (0, image.shape[0], stepSize):
+        for x in range (0, image.shape[1], stepSize):
             # yield the current window
             yield (x, y, image[y:y + windowSize[1], x:x + windowSize[0]])
 
@@ -105,12 +105,12 @@ def createDirectory ( path ):
             No return values
     '''
     if os.path.exists (path):
-        print "Directory exists"
+        print ("Directory exists")
     elif not os.path.exists (path):
         os.mkdir (path)
-        print "Directory created successfully: " + str (path)
+        print ("Directory created successfully: " + str (path))
     else:
-        print "Could not create Directory"
+        print ("Could not create Directory")
 
 
 def resizeToMainWindowSize ( image, winSize ):
@@ -218,11 +218,11 @@ def dispOpticalFlow (Image, Flow, Divisor, name ):
 def exitScript():
     ky = cv2.waitKey (1) & 0xff
     if ky == 27:
-        print "Exiting the program"
+        print ("Exiting the program")
         os._exit(0)
     elif ky == ord ('q'):
-        print "Exiting the program"
+        print ("Exiting the program")
         os._exit(0)
     elif ky == ord ('e'):
-        print "Exiting the program"
+        print ("Exiting the program")
         os._exit (0)

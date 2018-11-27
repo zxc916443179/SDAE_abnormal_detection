@@ -27,13 +27,18 @@ import imutils
 import time
 import mylib
 # Python version 2.7
-import Tkinter, tkFileDialog
+# import Tkinter, tkFileDialog
 # Python Version 3.0
 
-root = Tkinter.Tk ()
-dirname = tkFileDialog.askdirectory (parent=root, initialdir="~/$USER/Desktop", title='Please select a directory')
-if len (dirname) > 0:
-    print "You chose %s" % dirname
+# root = Tkinter.Tk ()
+# dirname = tkFileDialog.askdirectory (parent=root, initialdir="~/$USER/Desktop", title='Please select a directory')
+ap = argparse.ArgumentParser()
+ap.add_argument("-d", "--dPath", help="data path")
+args = vars(ap.parse_args())
+dirname = args["dPath"]
+if args["dPath"] is None:
+    dirname = "./UCSD_Anomaly_Dataset.v1p2/UCSDped1/Train"
+print ("You chose %s" % dirname)
 
 
 
@@ -65,11 +70,10 @@ for fd in dPath:
 		dPath.remove(fd)
 dPath = sorted(dPath) # Sort and remove the ._.DS_Store,  .DS_Strore folder
 
-print dPath
+print (dPath)
 
 # Sample path is taken but not used anywhere in this script
-path = "/UCSD_Anomaly_Dataset.v1p2/UCSDped1/Train/Train001"
-
+path = ("/UCSD_Anomaly_Dataset.v1p2/UCSDped1/Train/Train001")
 windSizes = ['15', '18', '20', 'rs18', 'rs20']
 frameSizes = [[240, 165], [252, 162], [240, 160]]
 # This path is used for the script
@@ -90,22 +94,22 @@ folders = dPath
 Divisor = 255  # For the grid of the vectors
 #print "Type of : " + str(type(dPath))
 for idx, f in enumerate (dPath):
-    print "Folder: " + str (f)
+    print ("Folder: " + str (f))
     # print os.path.join(str(datasetPath), str(f))
-    print os.path.join (str (dirname), str (f))
+    print (os.path.join (str (dirname), str (f)))
     # files = sorted (os.listdir (os.path.join (str (datasetPath), str (f))))
     files = sorted (os.listdir (os.path.join (str (dirname), str (f))))
 
     if '.DS_Store' in files:
-		files.remove('.DS_Store')
+    	files.remove('.DS_Store')
     if '._.DS_Store' in files:
         files.remove ('._.DS_Store')
     if 'wingray' in files:
         files.remove ('wingray')
     if 'optframe' in files:
         files.remove ('optframe')
-	if 'wincolor' in files:
-		files.remove('wincolor')
+    if 'wincolor' in files:
+    	files.remove('wincolor')
     if 'optgrayframe' in files:
         files.remove ('optgrayframe')
 
@@ -117,7 +121,8 @@ for idx, f in enumerate (dPath):
 	#print listOfFiles
     # print files
 #	index = 0
-    print "Length of file list: " + str (len (files))
+    length = len(files)
+    print ("Length of file list: " + str (len (files)))
     for index, file in enumerate (files):
         # print "Full File Path: " + os.path.join(str(datasetPath), str(f), str(files[index]))
 		#print "Full File Path: " + os.path.join(str(datasetPath), str(f), str(files[index+1]))
@@ -128,7 +133,7 @@ for idx, f in enumerate (dPath):
 		# print index+1
 		# print files[index]
 		# print files[index+1]
-        if index <= 198:
+        if index < length - 1: 
             prevFrameName = files[index]
             nextFrameName = files[index + 1]
             # print
@@ -175,7 +180,7 @@ for idx, f in enumerate (dPath):
             cv2.imshow('Next Frame',  nextFrame)
 
             flow = cv2.calcOpticalFlowFarneback(prevGray,  nextGray,  None,  0.5,  3,  15,  3,  5,  1.2,  0																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										)
-            #Obtain the flow magnitude and direction angle
+            #convert cart to polar to Obtain the flow magnitude and direction angle
             mag,  ang = cv2.cartToPolar(flow[...,  0],  flow[...,  1])
             #print flow
             xFlow,  yFlow = flow[...,  0],  flow[...,  1]
@@ -224,7 +229,7 @@ for idx, f in enumerate (dPath):
                 if not os.path.exists(os.path.join(tmppath, "wincolor")):
                     os.makedirs(os.path.join(tmppath, "wincolor"))
                 if window.shape[0] != winH or window.shape[1] != winW:
-                    print winNo
+                    print (winNo)
                     #cv2.imshow("Internal window", window)
                     continue
                 clone = rgbImg.copy()
@@ -261,48 +266,48 @@ for idx, f in enumerate (dPath):
             winNo1 = 0
             motionGray = cv2.resize(motionGray, (240, 165), 1)
             for (x1, y1, window1) in mylib.sliding_window (motionGray, stepSize=15, windowSize=(15, 15)):
-				if not os.path.exists(os.path.join(tmppath, "wingray")):
-					os.makedirs(os.path.join(tmppath, "wingray"))
+                if not os.path.exists(os.path.join(tmppath, "wingray")):
+                    os.makedirs(os.path.join(tmppath, "wingray"))
 				# print winNo
 				# print x, y, window.shape
 				# print winH,  winW
 				# if the window does not meet our desired window size,  ignore it
 				# print "windows pre"
 				# print "Windows pre shape : " +str(window1.shape)
-				if window1.shape[0] != winH or window1.shape[1] != winW:
+                if window1.shape[0] != winH or window1.shape[1] != winW:
 					# print window1.shape[0]
 					# print window1.shape[1]
 					# print winNo1
 					#cv2.imshow("Internal window", window)
 					# print "window1"
-					continue
+                    continue
 			# since we do not have a classifier,  we'll just draw the window
-				clone1 = motionGray.copy()
+                clone1 = motionGray.copy()
 				# print "Clone 1 : " + str(clone1.shape)
-				cv2.rectangle(clone1,  (x1,  y1),  (x1 + winW,  y1 + winH),  (0,  255,  0),  2)
+                cv2.rectangle(clone1,  (x1,  y1),  (x1 + winW,  y1 + winH),  (0,  255,  0),  2)
 
                 #cv2.startWindowThread()
 				#cv2.namedWindow("Clone", 1)
 				#cv2.startWindowThread()
 				#cv2.namedWindow("Window", 1)
-				cv2.imshow("Clone gray",  clone1)
-				cv2.imshow("Smaller window gray", window1)
+                cv2.imshow("Clone gray",  clone1)
+                cv2.imshow("Smaller window gray", window1)
 				#print str(tmppath)+"/wingray/"+str(winNo1)+"_"+str(file.split('.')[0])+".jpeg"#, window1
-				cv2.imwrite(str(tmppath)+"/wingray/"+str(winNo1)+"_"+str(file.split('.')[0])+".jpeg", window1)
+                cv2.imwrite(str(tmppath)+"/wingray/"+str(winNo1)+"_"+str(file.split('.')[0])+".jpeg", window1)
 
-				tk1 = cv2.waitKey(1) & 0xFF
-				if tk1==27:
-					cv2.destroyAllWindows()
-					break
-				elif tk1 == ord('q'):
-					cv2.destroyAllWindows()
-					break
-				elif tk1 == ord('e'):
-					cv2.destroyAllWindows()
-					os._exit(0)
-					break
-				#time.sleep(0.025)
-				winNo1 = winNo1 + 1
+                tk1 = cv2.waitKey(1) & 0xFF
+                if tk1==27:
+                    cv2.destroyAllWindows()
+                    break
+                elif tk1 == ord('q'):
+                    cv2.destroyAllWindows()
+                    break
+                elif tk1 == ord('e'):
+                    cv2.destroyAllWindows()
+                    os._exit(0)
+                    break
+                #time.sleep(0.025)
+                winNo1 = winNo1 + 1
 
             k = cv2.waitKey(1) & 0xFF
             if k==27:
