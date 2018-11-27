@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 ## Learning Deep Representations of Appearance and Motion for Anomalous Event Detection
 
     Reimplementation of this paper.
