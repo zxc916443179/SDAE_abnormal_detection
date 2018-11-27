@@ -155,20 +155,7 @@ class DAE(object):
                     if current_step % 1000 == 0:
                         path = saver.save(sess, checkpoint_prefix, global_step=current_step)
                         print("Saved model checkpoint to {}\n".format(path))
-            # n_examples = 15
-            # fig, axs = plt.subplots(2, n_examples, figsize=(10, 2))
-            # for example_i in range(n_examples):
-            #     axs[0][example_i].imshow(
-            #         # np.reshape(test_xs[example_i, :], (28, 28)))
-            #         np.reshape(self.batch[example_i, :], (15, 15)))
-            #     axs[1][example_i].imshow(
-            #         # np.reshape([recon[example_i, :] + mean_img], (28, 28)))
-            #         np.reshape([self.recon[example_i, :]], (15, 15)))
-            # print ('Plot complete now showing...')
-            # fig.show()
-            # plt.draw()
-            # plt.title("1st function - dataset ones but used our dataset")
-            # plt.waitforbuttonpress()
+
         self.finetuning(batch_size, num_epoch, sess, saver, out_dir)
 
     def finetuning(self, batch_size, num_epoch, sess, saver, out_dir):
