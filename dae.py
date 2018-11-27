@@ -179,7 +179,7 @@ class DAE(object):
                 current_input = self.out_put
         with tf.name_scope('fn_score'):
             loss = tf.pow(self.out_put - self.input_x, 2)
-            self.score = tf.reduce_sum(loss, name="score") + self.ft_losses[layer_i]
+            self.score = tf.reduce_sum(loss, name="score") + self.ft_losses[layer_i] * flags.l2_reg_lambda
         global_step = tf.Variable(0, trainable=False, name="global_step")
         learning_rate = 0.001
         # learning_rate = tf.train.exponential_decay(0.01, global_step, flags.max / flags.batch_size, 0.98, staircase=True)
