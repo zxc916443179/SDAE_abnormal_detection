@@ -71,7 +71,7 @@ class DAE(object):
         self.l2_losses = [tf.constant(0.0) for _ in hidden_layers]
         for layer_i, dimension in enumerate(hidden_layers):
             if layer_i == 0:
-                current_input = self.Y
+                current_input = self.input_x
             else:
                 current_input = self.layer_output[layer_i - 1]
             with tf.name_scope("hidden_layer_%d" % dimension):
