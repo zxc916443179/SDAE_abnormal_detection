@@ -13,14 +13,14 @@ graph = tf.Graph()
 with graph.as_default():
     sess = tf.Session()
     with sess.as_default():
-        saver = tf.train.import_meta_graph(flags.model_path)
-        saver.restore(sess, tf.train.latest_checkpoint(flags.checkpoint_dir))
+        checkpoint_file = tf.train.latest_checkpoint(flags.checkpoint_dir)
+        saver = tf.train.import_meta_graph("{}.meta".format(checkpoint_file))
+        saver.restore(sess, checkpoint_file)
+
         encode = graph.get_operation_by_name("hidden_layer_128/Sigmoid").outputs[0]
-        recon = graph.get_operation_by_name("decoder_1024/Sigmoid").outputs[0]
+        recon = graph.get_operation_by_name("fn_score/score").outputs[0]
         input_x = graph.get_operation_by_name("input_x").outputs[0]
         mask = graph.get_operation_by_name("mask").outputs[0]
-        print(graph.get_all_collection_keys())
-        input()
         dataset = u.loadDataset(batch_size=flags.max, max=flags.max)
         dataset = next(dataset)
         mask_ts = np.random.binomial(1, 1, dataset.shape)
