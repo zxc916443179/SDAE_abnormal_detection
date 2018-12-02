@@ -47,6 +47,11 @@ with graph.as_default():
             # prediction = new_svm.predict(encoder_result)
             # plt.scatter(range(10000) ,prediction[: 10000])
             pre = new_svm.decision_function(encoder_result).ravel() * -1
+            # print(pre[:100])
             plt.plot(range(10000), pre[:10000])
-            plt.show()
             plt.waitforbuttonpress()
+        # clf = svm.OneClassSVM(kernel='rbf', gamma='auto', nu=1e-3)
+        # clf.fit(encoder_result)
+        # with open('./svm.model', 'wb') as m:
+        #     pickle.dump(clf, m)
+        
