@@ -246,7 +246,7 @@ class DAE(object):
         #         # np.reshape([recon[example_i, :] + mean_img], (28, 28)))
         #         np.reshape([recon[example_i, :]], (15, 15)))
         # print ('Plot complete now showing...')
-        clf = svm.OneClassSVM(kernel='rbf', gamma='auto', nu=1)
+        clf = svm.OneClassSVM(kernel='rbf', gamma='auto', nu=1e-3)
         clf.fit(encodes[3])
         with open('./svm.model', 'wb') as m:
             pickle.dump(clf, m)
