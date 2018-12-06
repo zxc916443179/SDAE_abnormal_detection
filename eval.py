@@ -19,17 +19,14 @@ with graph.as_default():
 
         encode = graph.get_operation_by_name("hidden_layer_128/Sigmoid").outputs[0]
         recon = graph.get_operation_by_name("finetuning_decoder_3/Sigmoid").outputs[0]
-        print(recon)
         input_x = graph.get_operation_by_name("input_x").outputs[0]
         mask = graph.get_operation_by_name("mask").outputs[0]
         dataset = u.loadDataset(batch_size=flags.max, max=flags.max)
         dataset = next(dataset)
         mask_ts = np.random.binomial(1, 1, dataset.shape)
-        # batch_xs, batch_ys = mnist.train.next_batch(batch_size)  # max(x) = 1, min(x) = 0
         encoder_result, recon_result = sess.run([encode, recon], feed_dict={
             input_x: dataset, mask: mask_ts})
         n_examples = 15
-        print(encoder_result.shape)
         fig, axs = plt.subplots(2, n_examples, figsize=(10, 2))
         for example_i in range(n_examples):
             axs[0][example_i].imshow(
