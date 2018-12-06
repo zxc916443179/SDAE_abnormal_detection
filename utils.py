@@ -1,6 +1,6 @@
 """Some useful utilities when dealing with neural nets w/ tensorflow and data process.
 
-Parag K. Mital, Jan. 2016
+Parag K. Mital, Jan. 2016, zxc 2018.
 """
 import tensorflow as tf
 import numpy as np
@@ -145,11 +145,16 @@ def bias_variable(shape):
 def loadDataset(batch_size=1000, max = 0, dataset_dir=None):
     """
     load pickle dataset by batches
-        author: zxc
-        param: 
-            batch_size: size of batch
-            max: max num of dataset to load. if max == 0, load all(recommend to use load_whole_dataset bellow)
-            dataset_dir: dir to dataset
+
+    Author
+    ------
+        zxc
+
+    Parameters
+    ---------- 
+        batch_size: size of batch
+        max: max num of dataset to load. if max == 0, load all(recommend to use load_whole_dataset bellow)
+        dataset_dir: dir to dataset
     """
     opendataset = open(dataset_dir,'rb')
     # dataset = pickle.load(opendataset)
@@ -186,11 +191,16 @@ def loadDataset(batch_size=1000, max = 0, dataset_dir=None):
 
 def load_whole_dataset(max=0, dataset_dir=None):
     """
-    load pickle dataset by batches
-        author: zxc
-        param: 
-            max: max num of dataset to load. if max == 0, load all(assume that the size of dataset is no bigger than 5000000, sure you can modify it but mind memory size)
-            dataset_dir: dir to dataset
+    load whole pickle dataset 
+
+    Author
+    ------
+        zxc
+
+    Parameters
+    ---------- 
+        max: max num of dataset to load. if max == 0, load all(assume that the size of dataset is no bigger than 5000000, sure you can modify it but mind memory size)
+        dataset_dir: dir to dataset
     """
     if max == 0:
         dataset = np.zeros([5000000, 225])
