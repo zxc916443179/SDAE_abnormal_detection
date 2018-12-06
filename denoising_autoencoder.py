@@ -4,6 +4,7 @@ import pickle
 import numpy as np
 import tensorflow as tf
 from utils import corrupt
+import utils
 import argparse
 import os
 import time
@@ -25,49 +26,7 @@ tf.flags.DEFINE_string("checkpoint_dir", "none", "loading latest checkpoint")
 tf.flags.DEFINE_float("corrupt_prob", 0.003, "corrupt data ratio")
 tf.flags.DEFINE_string("dimensions", "1024,512,256,128", "dimensions of hidden layers (default:[1024, 512, 256, 128]")
 flags = tf.flags.FLAGS
-# arg = argparse.ArgumentParser()
-# arg.add_argument("-p", "--path", help="dataset path")
-# arg.add_argument("-v", "--validation", help="validation ratio")
-# args = vars(arg.parse_args())
-# if args['path'] is None:
-#     datasetPath = os.path.join('./data/appearance_spliced_images/', 'appearance.p')
-# else:
-#     datasetPath = args['path']
-#datasetPath = 'appearancedataset.p'
-def loadDataset(batch_size=1000, max = 0):
-    opendataset = open(flags.datasetPath,'rb')
-    # dataset = pickle.load(opendataset)
-    dataset = np.zeros([1, 225])
-    dataset[0] = pickle.load(opendataset)
-    i = 1
-    total = 1
-    while True:
-        try:
-            tmp = pickle.load(opendataset)
-            dataset = np.append(dataset, [tmp], axis=0)
-            if i % 100 is 0:
-                pass
-            # print(dataset)
-            if max != 0 and total == max:
-                print('return')
-                dataset = np.asarray(dataset)
-                yield dataset
-                break
-            if i == batch_size:
-                dataset = np.asarray(dataset)
-                yield dataset
-                i = 1
-                dataset = np.zeros([1, 225])
-                dataset[0] = pickle.load(opendataset)
-            i += 1
-            total += 1
-        except Exception as e:
-            print(e)
-            dataset = np.asarray(dataset)
-            yield dataset
-            opendataset.close()
-            break
-    opendataset.close()
+
 
 # opendataset = open(datasetPath,'r')
 # dataset = pickle.load(opendataset)
@@ -260,7 +219,7 @@ def test_dataset():
             # print(mask[:5])
             for epoch_i in range(n_epochs):
                 # print dataset_train.shape[1] // batch_size
-                datasets = loadDataset(batch_size=batch_size, max=flags.max)
+                datasets = utils.loadDataset(batch_size=batch_size, max=flags.max, dataset_dir=flags.datasetPath)
                 f = 0
                 for dataset in datasets:
                     dataset_train, dataset_test = partition(dataset, shuffle=False)

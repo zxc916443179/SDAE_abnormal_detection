@@ -1,9 +1,10 @@
-"""Some useful utilities when dealing with neural nets w/ tensorflow.
+"""Some useful utilities when dealing with neural nets w/ tensorflow and data process.
 
 Parag K. Mital, Jan. 2016
 """
 import tensorflow as tf
 import numpy as np
+import pickle
 # import matplotlib.pyplot as plt
 
 def montage_batch(images):
@@ -140,3 +141,69 @@ def bias_variable(shape):
     '''
     initial = tf.random_normal(shape, mean=0.0, stddev=0.01)
     return tf.Variable(initial)
+
+def loadDataset(batch_size=1000, max = 0, dataset_dir=None):
+    """
+    load pickle dataset by batches
+        author: zxc
+        param: 
+            batch_size: size of batch
+            max: max num of dataset to load. if max == 0, load all(recommend to use load_whole_dataset bellow)
+            dataset_dir: dir to dataset
+    """
+    opendataset = open(dataset_dir,'rb')
+    # dataset = pickle.load(opendataset)
+    dataset = np.zeros([1, 225])
+    dataset[0] = pickle.load(opendataset)
+    i = 1
+    total = 1
+    while True:
+        try:
+            tmp = pickle.load(opendataset)
+            dataset = np.append([tmp], dataset, axis=0)
+            if i % 1000 is 0:
+                pass
+                print(dataset)
+            if max != 0 and total == max:
+                dataset = np.asarray(dataset)
+                yield dataset
+                break
+            if i == batch_size:
+                dataset = np.asarray(dataset)
+                yield dataset
+                i = 1
+                dataset = np.zeros([1, 225])
+                dataset[0] = pickle.load(opendataset)
+            i += 1
+            total += 1
+        except Exception as e:
+            print(e)
+            dataset = np.asarray(dataset)
+            yield dataset
+            opendataset.close()
+            break
+    opendataset.close()
+
+def load_whole_dataset(max=0, dataset_dir=None):
+    """
+    load pickle dataset by batches
+        author: zxc
+        param: 
+            max: max num of dataset to load. if max == 0, load all(assume that the size of dataset is no bigger than 5000000, sure you can modify it but mind memory size)
+            dataset_dir: dir to dataset
+    """
+    if max == 0:
+        dataset = np.zeros([5000000, 225])
+    else:
+        dataset = np.zeros([max, 225])
+    opendataset = open(dataset_dir,'rb')
+    end = 0
+    for i in range(dataset.shape[0]):
+        try:
+            dataset[i] = pickle.load(opendataset)
+            end += 1
+        except:
+            end -= 1
+            break
+    print(end)
+    return dataset[:end]

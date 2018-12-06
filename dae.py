@@ -6,6 +6,7 @@ import datetime
 import pickle
 from sklearn import svm
 from matplotlib import pyplot as plt
+import utils
 # hyper params define   
 tf.flags.DEFINE_float("validation", 0.8, "ratio of train/test")
 tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularization lambda (default: 0.0)")
@@ -19,40 +20,6 @@ tf.flags.DEFINE_string("dimensions", "1024,512,256,128", "dimensions of hidden l
 tf.flags.DEFINE_float("momentum", 0.9, "learning momentum(default:0.9)")
 
 flags = tf.flags.FLAGS
-
-def loadDataset(batch_size=1000, max = 0):
-    opendataset = open(flags.datasetPath,'rb')
-    # dataset = pickle.load(opendataset)
-    dataset = np.zeros([1, 225])
-    dataset[0] = pickle.load(opendataset)
-    i = 1
-    total = 1
-    while True:
-        try:
-            tmp = pickle.load(opendataset)
-            dataset = np.append(dataset, [tmp], axis=0)
-            if i % 100 is 0:
-                pass
-            # print(dataset)
-            if max != 0 and total == max:
-                dataset = np.asarray(dataset)
-                yield dataset
-                break
-            if i == batch_size:
-                dataset = np.asarray(dataset)
-                yield dataset
-                i = 1
-                dataset = np.zeros([1, 225])
-                dataset[0] = pickle.load(opendataset)
-            i += 1
-            total += 1
-        except Exception as e:
-            print(e)
-            dataset = np.asarray(dataset)
-            yield dataset
-            opendataset.close()
-            break
-    opendataset.close()
 
 class DAE(object):
     def __init__(self, hidden_layers=[1024, 512, 256, 128], l2_reg_lambda = 0.0, momentum=0.9):
@@ -141,7 +108,7 @@ class DAE(object):
 
 
             for j in range(num_epoch):
-                for batch in loadDataset(batch_size, max=flags.max):
+                for batch in utils.loadDataset(batch_size, max=flags.max, dataset_dir=flags.datasetPath):
                     mask_t = np.random.binomial(1, 1 - flags.corrupt_prob, batch.shape)
                     self.batch = batch
                     # mean_img = np.mean(batch, axis=1)
