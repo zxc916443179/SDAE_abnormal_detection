@@ -141,10 +141,10 @@ def bias_variable(shape):
     '''
     initial = tf.random_normal(shape, mean=0.0, stddev=0.01)
     return tf.Variable(initial)
-
+# %%
 def loadDataset(batch_size=1000, max = 0, dataset_dir=None):
     """
-    load pickle dataset by batches
+    load pickle dataset by batches(deprecated)
 
     Author
     ------
