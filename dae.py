@@ -29,7 +29,7 @@ class DAE(object):
         self.Y = self.input_x * self.mask
         self.momentum = momentum
         n_input = 225
-        current_input = self.input_x
+        current_input = self.Y
         self.Ws = []
         self.scores = []
         self.params = []
@@ -38,7 +38,7 @@ class DAE(object):
         self.l2_losses = [tf.constant(0.0) for _ in hidden_layers]
         for layer_i, dimension in enumerate(hidden_layers):
             if layer_i == 0:
-                current_input = self.input_x
+                current_input = self.Y
             else:
                 current_input = self.layer_output[layer_i - 1]
             with tf.name_scope("hidden_layer_%d" % dimension):
@@ -199,7 +199,7 @@ class DAE(object):
         # with graph.as_default():
         #     with sess.as_default():
         n_examples = 15
-        test_xs = next(loadDataset(256, 256))
+        test_xs = next(utils.loadDataset(256, 256, flags.datasetPath))
         mask = np.random.binomial(1, 1, test_xs.shape)
         score, recon, encodes = sess.run([self.score, self.out_put, self.layer_output], feed_dict={
             self.input_x: test_xs, self.mask: mask
