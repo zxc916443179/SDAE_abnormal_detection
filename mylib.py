@@ -226,3 +226,12 @@ def exitScript():
     elif ky == ord ('e'):
         print ("Exiting the program")
         os._exit (0)
+
+def zero_fraction(arr):
+    zeros = 0
+    cnt = 0
+    for i in range(len(arr)):
+        if arr[i] == 0:
+            zeros += 1
+        cnt += 1
+    return zeros / cnt
