@@ -181,7 +181,7 @@ class DAE(object):
         sess.run(tf.global_variables_initializer())
         print("Starting finetuning")
         for j in range(num_epoch):
-            for batch in loadDataset(batch_size, max=flags.max):
+            for batch in utils.loadDataset(batch_size, max=flags.max):
                 mask_t = np.random.binomial(1, 1 - flags.corrupt_prob, batch.shape)
                 # mean_img = np.mean(batch, axis=1)
                 # batch = np.array([img - mean_img for img in batch.T])
