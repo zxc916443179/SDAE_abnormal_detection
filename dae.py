@@ -14,13 +14,12 @@ tf.flags.DEFINE_string("datasetPath", './data/appearance_spliced_images/appearan
 tf.flags.DEFINE_integer("num_epoch", 10, "number of epoch(default: 10)")
 tf.flags.DEFINE_integer("batch_size", 10, "batch size(default: 10)")
 tf.flags.DEFINE_integer("max", 10000, "max number of dataset")
-tf.flags.DEFINE_string("checkpoint_dir", "none", "loading latest checkpoint")
 tf.flags.DEFINE_float("corrupt_prob", 0.0003, "corrupt data ratio")
 tf.flags.DEFINE_string("dimensions", "1024,512,256,128", "dimensions of hidden layers (default:[1024, 512, 256, 128]")
 tf.flags.DEFINE_float("momentum", 0.9, "learning momentum(default:0.9)")
 
 flags = tf.flags.FLAGS
-
+# flags = FLAGS._parse_flags()
 class DAE(object):
     def __init__(self, hidden_layers=[1024, 512, 256, 128], l2_reg_lambda = 0.0, momentum=0.9):
         self.input_x = tf.placeholder(tf.float32, [None, 225], name="input_x")
