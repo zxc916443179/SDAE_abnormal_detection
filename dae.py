@@ -180,7 +180,7 @@ class DAE(object):
         sess.run(tf.global_variables_initializer())
         print("Starting finetuning")
         for j in range(num_epoch):
-            for batch in utils.loadDataset(batch_size, max=flags.max):
+            for batch in utils.loadDataset(batch_size, max=flags.max, dataset_dir=flags.datasetPath):
                 mask_t = np.random.binomial(1, 1 - flags.corrupt_prob, batch.shape)
                 # mean_img = np.mean(batch, axis=1)
                 # batch = np.array([img - mean_img for img in batch.T])
@@ -198,7 +198,7 @@ class DAE(object):
         # with graph.as_default():
         #     with sess.as_default():
         n_examples = 15
-        test_xs = next(utils.loadDataset(256, 256, flags.datasetPath))
+        test_xs = next(utils.load_whole_dataset(1000000, flags.datasetPath))
         mask = np.random.binomial(1, 1, test_xs.shape)
         score, recon, encodes = sess.run([self.score, self.out_put, self.layer_output], feed_dict={
             self.input_x: test_xs, self.mask: mask
@@ -225,6 +225,9 @@ class DAE(object):
 if __name__ == "__main__":
     dimensions = list(map(int, flags.dimensions.split(",")))
     da = DAE(dimensions, l2_reg_lambda=flags.l2_reg_lambda, momentum=flags.momentum)
-    sess = tf.Session()
+    session_conf = tf.ConfigProto(
+        allow_soft_placement=True,
+        log_device_placement=True)
+    sess = tf.Session(config=session_conf)
     da.pretrain(flags.batch_size, flags.num_epoch, sess)
     # da.finetuning(flags.batch_size, flags.num_epoch, flags.checkpoint_dir)
