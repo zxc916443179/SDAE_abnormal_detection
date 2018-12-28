@@ -7,6 +7,12 @@ import pickle
 from sklearn import svm
 from matplotlib import pyplot as plt
 import utils
+
+import platform
+
+if 'Linux' in platform.system():
+    os.environ["CUDA_VISIBLE_DEVICES"] = 0
+
 # hyper params define   
 tf.flags.DEFINE_float("validation", 0.8, "ratio of train/test")
 tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularization lambda (default: 0.0)")
