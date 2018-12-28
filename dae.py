@@ -96,18 +96,18 @@ class DAE(object):
             grads_and_vars = optimizer.compute_gradients(self.scores[i])
             train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
             sess.run(tf.initialize_all_variables())
-            #define summaries
-            grad_summaries = []
-            for g, v in grads_and_vars:
-                if g is not None:
-                    grad_hist_summary = tf.summary.histogram("{}/grad/hist".format(v.name), g)
-                    sparsity_summary = tf.summary.scalar("{}/grad/sparsity".format(v.name), tf.nn.zero_fraction(g))
-                    grad_summaries.append(grad_hist_summary)
-                    grad_summaries.append(sparsity_summary)
-            grad_summaries_merged = tf.summary.merge(grad_summaries)
+            # define summaries
+            # grad_summaries = []
+            # for g, v in grads_and_vars:
+            #     if g is not None:
+            #         grad_hist_summary = tf.summary.histogram("{}/grad/hist".format(v.name), g)
+            #         sparsity_summary = tf.summary.scalar("{}/grad/sparsity".format(v.name), tf.nn.zero_fraction(g))
+            #         grad_summaries.append(grad_hist_summary)
+            #         grad_summaries.append(sparsity_summary)
+            # grad_summaries_merged = tf.summary.merge(grad_summaries)
             score_summary = tf.summary.scalar("score", self.scores[i])
 
-            train_summary_op = tf.summary.merge([score_summary, grad_summaries_merged])
+            train_summary_op = tf.summary.merge([score_summary])
             train_summary_dir = os.path.join(out_dir, "summaries", "train")
             train_summary_writer = tf.summary.FileWriter(train_summary_dir, sess.graph)
 
@@ -126,8 +126,9 @@ class DAE(object):
                     time_str = datetime.datetime.now().isoformat()
                     if current_step % 100 == 0:
                         print("{}: traning Layer_{} ".format(time_str, i)+ "epoch:%d " % j + "step: %d" % step + "  score: {}".format(score))
-                    train_summary_writer.add_summary(summaries, step)
+                    
                     if current_step % 10000 == 0:
+                        train_summary_writer.add_summary(summaries, step)
                         path = saver.save(sess, checkpoint_prefix, global_step=current_step)
                         print("Saved model checkpoint to {}\n".format(path))
 
@@ -163,25 +164,23 @@ class DAE(object):
         grads_and_vars = optimizer.compute_gradients(self.score)
         finetune_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
         sess.run(tf.initialize_all_variables())
-        timestamp = str(int(time.time()))
-        # out_dir = os.path.abspath(os.path.join(os.path.curdir, "runs", timestamp))
         print("Writing to {}\n".format(out_dir))
 
         checkpoint_dir = os.path.abspath(os.path.join(out_dir, "checkpoints"))
         checkpoint_prefix = os.path.join(checkpoint_dir, "model")
         if not os.path.exists(checkpoint_dir):
             os.makedirs(checkpoint_dir)
-        grad_summaries = []
-        for g, v in grads_and_vars:
-            if g is not None:
-                grad_hist_summary = tf.summary.histogram("{}/grad/hist".format(v.name), g)
-                sparsity_summary = tf.summary.scalar("{}/grad/sparsity".format(v.name), tf.nn.zero_fraction(g))
-                grad_summaries.append(grad_hist_summary)
-                grad_summaries.append(sparsity_summary)
-        grad_summaries_merged = tf.summary.merge(grad_summaries)
+        # grad_summaries = []
+        # for g, v in grads_and_vars:
+        #     if g is not None:
+        #         grad_hist_summary = tf.summary.histogram("{}/grad/hist".format(v.name), g)
+        #         sparsity_summary = tf.summary.scalar("{}/grad/sparsity".format(v.name), tf.nn.zero_fraction(g))
+        #         grad_summaries.append(grad_hist_summary)
+        #         grad_summaries.append(sparsity_summary)
+        # grad_summaries_merged = tf.summary.merge(grad_summaries)
         score_summary = tf.summary.scalar("score", self.score)
 
-        finetune_summary_op = tf.summary.merge([score_summary, grad_summaries_merged])
+        finetune_summary_op = tf.summary.merge([score_summary])
         finetune_summary_dir = os.path.join(out_dir, "summaries", "finetune")
         finetune_summary_writer = tf.summary.FileWriter(finetune_summary_dir, sess.graph)
         sess.run(tf.global_variables_initializer())
@@ -199,15 +198,16 @@ class DAE(object):
                 time_str = datetime.datetime.now().isoformat()
                 if current_step % 100 == 0:
                     print("{}: finetuning  step: {}".format(time_str, step) + "  score: {}".format(score))
-                finetune_summary_writer.add_summary(summaries, step)
+                
                 if current_step % 10000 == 0:
+                    finetune_summary_writer.add_summary(summaries, step)
                     path = saver.save(sess, checkpoint_prefix, global_step=current_step)
                     print("Saved model checkpoint to {}\n".format(path))
         # with graph.as_default():
         #     with sess.as_default():
         n_examples = 15
         with tf.device('/cpu:0'):
-            test_xs = utils.load_whole_dataset(1000000, flags.datasetPath)
+            test_xs = utils.load_whole_dataset(1000, flags.datasetPath)
             mask = np.random.binomial(1, 1, test_xs.shape)
         score, recon, encodes = sess.run([self.score, self.out_put, self.layer_output], feed_dict={
             self.input_x: test_xs, self.mask: mask
@@ -237,6 +237,7 @@ if __name__ == "__main__":
     session_conf = tf.ConfigProto(
         allow_soft_placement=True,
         log_device_placement=True)
+    session_conf.gpu_options.allow_growth = True
     sess = tf.Session(config=session_conf)
     da.pretrain(flags.batch_size, flags.num_epoch, sess)
     # da.finetuning(flags.batch_size, flags.num_epoch, flags.checkpoint_dir)
