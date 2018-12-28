@@ -11,7 +11,7 @@ import utils
 import platform
 
 if 'Linux' in platform.system():
-    os.environ["CUDA_VISIBLE_DEVICES"] = 0
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 # hyper params define   
 tf.flags.DEFINE_float("validation", 0.8, "ratio of train/test")
