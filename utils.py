@@ -156,36 +156,33 @@ def loadDataset(batch_size=1000, max = 0, dataset_dir=None):
         max: max num of dataset to load. if max == 0, load all(recommend to use load_whole_dataset bellow)
         dataset_dir: dir to dataset
     """
-    with tf.device('/cpu:0'):
-        opendataset = open(dataset_dir,'rb')
-        # dataset = pickle.load(opendataset)
-        dataset = np.zeros([1, 225])
-        dataset[0] = pickle.load(opendataset)
-        i = 1
-        total = 1
-        while True:
-            try:
-                tmp = pickle.load(opendataset)
-                dataset = np.append([tmp], dataset, axis=0)
-                if max != 0 and total == max:
-                    dataset = np.asarray(dataset)
-                    yield dataset
-                    break
-                if i == batch_size:
-                    dataset = np.asarray(dataset)
-                    yield dataset
-                    i = 1
-                    dataset = np.zeros([1, 225])
-                    dataset[0] = pickle.load(opendataset)
-                i += 1
-                total += 1
-            except Exception as e:
-                print(e)
+    opendataset = open(dataset_dir,'rb')
+    dataset = pickle.load(opendataset)
+    dataset = [dataset]
+    i = 1
+    total = 1
+    while True:
+        try:
+            tmp = pickle.load(opendataset)
+            dataset.append(tmp)
+            if max != 0 and total == max:
                 dataset = np.asarray(dataset)
                 yield dataset
-                opendataset.close()
                 break
-        opendataset.close()
+            if i == batch_size:
+                dataset = np.asarray(dataset)
+                yield dataset
+                i = 1
+                dataset = [pickle.load(opendataset)]
+            i += 1
+            total += 1
+        except Exception as e:
+            print(e)
+            dataset = np.asarray(dataset)
+            yield dataset
+            opendataset.close()
+            break
+    opendataset.close()
 
 def load_whole_dataset(max=0, dataset_dir=None):
     """
