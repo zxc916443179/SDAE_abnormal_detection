@@ -113,7 +113,7 @@ class DAE(object):
                     # mean_img = np.mean(batch, axis=1)
                     # batch = np.array([img - mean_img for img in batch.T])
                     # batch = batch.T
-                    _, score, step, summaries, self.recon = sess.run([train_op, self.scores[i], global_step, train_summary_op, self.da_output[i]], feed_dict={
+                    _, score, step, summaries = sess.run([train_op, self.scores[i], global_step, train_summary_op], feed_dict={
                         self.input_x: batch, self.mask: mask_t
                     })
                     current_step = tf.train.global_step(sess, global_step)
@@ -200,8 +200,9 @@ class DAE(object):
         # with graph.as_default():
         #     with sess.as_default():
         n_examples = 15
-        test_xs = next(utils.load_whole_dataset(1000000, flags.datasetPath))
-        mask = np.random.binomial(1, 1, test_xs.shape)
+        with tf.device('/cpu:0'):
+            test_xs = utils.load_whole_dataset(1000000, flags.datasetPath)
+            mask = np.random.binomial(1, 1, test_xs.shape)
         score, recon, encodes = sess.run([self.score, self.out_put, self.layer_output], feed_dict={
             self.input_x: test_xs, self.mask: mask
         })
