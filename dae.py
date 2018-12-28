@@ -117,10 +117,11 @@ class DAE(object):
                         self.input_x: batch, self.mask: mask_t
                     })
                     current_step = tf.train.global_step(sess, global_step)
+                    time_str = datetime.datetime.now().isoformat()
                     if current_step % 100 == 0:
-                        print("traning Layer_%d " % i + "epoch:%d " % j + "step: %d" % step + "  score: {}".format(score))
+                        print("{}: traning Layer_{} ".format(time_str, i)+ "epoch:%d " % j + "step: %d" % step + "  score: {}".format(score))
                     train_summary_writer.add_summary(summaries, step)
-                    if current_step % 1000 == 0:
+                    if current_step % 10000 == 0:
                         path = saver.save(sess, checkpoint_prefix, global_step=current_step)
                         print("Saved model checkpoint to {}\n".format(path))
 
@@ -185,14 +186,15 @@ class DAE(object):
                 # mean_img = np.mean(batch, axis=1)
                 # batch = np.array([img - mean_img for img in batch.T])
                 # batch = batch.T
-                _, score, step, summaries, recon = sess.run([finetune_op, self.score, global_step, finetune_summary_op, self.out_put], feed_dict={
+                _, score, step, summaries = sess.run([finetune_op, self.score, global_step, finetune_summary_op], feed_dict={
                     self.input_x: batch, self.mask: mask_t
                 })
                 current_step = tf.train.global_step(sess, global_step)
+                time_str = datetime.datetime.now().isoformat()
                 if current_step % 100 == 0:
-                    print("finetuning  step: %d" % step + "  score: {}".format(score))
+                    print("{}: finetuning  step: {}".format(time_str, step) + "  score: {}".format(score))
                 finetune_summary_writer.add_summary(summaries, step)
-                if current_step % 1000 == 0:
+                if current_step % 10000 == 0:
                     path = saver.save(sess, checkpoint_prefix, global_step=current_step)
                     print("Saved model checkpoint to {}\n".format(path))
         # with graph.as_default():
