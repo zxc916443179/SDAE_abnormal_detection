@@ -51,6 +51,7 @@ class DAE(object):
                 b = tf.Variable(tf.constant(0.0, shape=[dimension]), name="b")
                 self.Ws.append(W)
                 output = tf.nn.sigmoid(tf.matmul(current_input, W) + b)
+                # output = tf.nn.relu(tf.matmul(current_input, W) + b)
                 self.layer_output.append(output)
                 self.l2_losses[layer_i] += tf.nn.l2_loss(W)
                 self.params.extend([W, b])
@@ -78,9 +79,13 @@ class DAE(object):
 
         checkpoint_dir = os.path.abspath(os.path.join(out_dir, "checkpoints"))
         checkpoint_prefix = os.path.join(checkpoint_dir, "model")
+        params_prefix = os.path.join(out_dir, 'params')
+        os.makedirs(params_prefix)
         if not os.path.exists(checkpoint_dir):
             os.makedirs(checkpoint_dir)
-        
+        with open("%s\\params.txt" % params_prefix, 'w') as params_file:
+            params_file.writelines(flags)
+
         sess.run(tf.global_variables_initializer())
         # sess.run(init)
         for i in range(len(self.dimensions)):
@@ -88,11 +93,11 @@ class DAE(object):
             # learning_rate = 0.01
             
             global_step = tf.Variable(0, trainable=False, name="global_step")
-            learning_rate = 0.001
+            learning_rate = 0.01
             # learning_rate = tf.train.exponential_decay(0.01, global_step, flags.max / flags.batch_size, 0.98, staircase=True)
-            # optimizer = tf.train.RMSPropOptimizer(learning_rate, momentum=self.momentum)
+            optimizer = tf.train.RMSPropOptimizer(learning_rate, momentum=self.momentum)
             # optimizer = tf.train.AdamOptimizer(learning_rate)
-            optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+            # optimizer = tf.train.GradientDescentOptimizer(learning_rate)
             grads_and_vars = optimizer.compute_gradients(self.scores[i])
             train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
             sess.run(tf.initialize_all_variables())
@@ -119,7 +124,7 @@ class DAE(object):
                     # mean_img = np.mean(batch, axis=1)
                     # batch = np.array([img - mean_img for img in batch.T])
                     # batch = batch.T
-                    _, score, step, summaries = sess.run([train_op, self.scores[i], global_step, train_summary_op], feed_dict={
+                    _, score, step = sess.run([train_op, self.scores[i], global_step], feed_dict={
                         self.input_x: batch, self.mask: mask_t
                     })
                     current_step = tf.train.global_step(sess, global_step)
@@ -127,7 +132,10 @@ class DAE(object):
                     if current_step % 100 == 0:
                         print("{}: traning Layer_{} ".format(time_str, i)+ "epoch:%d " % j + "step: %d" % step + "  score: {}".format(score))
                     
-                    if current_step % 10000 == 0:
+                    if current_step % 2000 == 0:
+                        _, score, step, summaries = sess.run([train_op, self.scores[i], global_step, train_summary_op], feed_dict={
+                            self.input_x: batch, self.mask: mask_t
+                        })
                         train_summary_writer.add_summary(summaries, step)
                         path = saver.save(sess, checkpoint_prefix, global_step=current_step)
                         print("Saved model checkpoint to {}\n".format(path))
@@ -207,7 +215,7 @@ class DAE(object):
         #     with sess.as_default():
         n_examples = 15
         with tf.device('/cpu:0'):
-            test_xs = utils.load_whole_dataset(1000, flags.datasetPath)
+            test_xs = utils.load_whole_dataset(1000000, flags.datasetPath)
             mask = np.random.binomial(1, 1, test_xs.shape)
         score, recon, encodes = sess.run([self.score, self.out_put, self.layer_output], feed_dict={
             self.input_x: test_xs, self.mask: mask
