@@ -212,3 +212,20 @@ def load_whole_dataset(max=0, dataset_dir=None):
             break
     print(end)
     return dataset[:end]
+# %%
+def loadlabel(dir=None):
+    if dir is None:
+        print('dir is expected type of string but get None')
+    label_file = open(dir, 'rb')
+    label = []
+    while True:
+        try:
+            t = pickle.load(label_file)
+            if t is 0:
+                label.append(1)
+            else:
+                label.append(-1)
+        except Exception as e:
+            print(e)
+            break
+    return np.asarray(label)
